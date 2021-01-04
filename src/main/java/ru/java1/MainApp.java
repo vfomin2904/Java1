@@ -1,6 +1,7 @@
 package ru.java1;
 
 import javax.swing.*;
+import java.sql.SQLOutput;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -8,7 +9,8 @@ public class MainApp {
     public static final char DOT_EMPTY = '*';
     public static final char DOT_X = 'X';
     public static final char DOT_O = '0';
-    public static final int SIZE = 3;
+    public static final int SIZE = 5;
+    public static final int SHTICK = 4;
     public static char[][] map = new char[SIZE][SIZE];
 
     public static void main(String[] args) {
@@ -21,6 +23,11 @@ public class MainApp {
                 System.out.println("Победил человек");
                 break;
             }
+            if(emptyMap()){
+                drawMap();
+                System.out.println("Ничья");
+                break;
+            }
             aiStep();
             if(checkWin(DOT_O)){
                 drawMap();
@@ -28,6 +35,19 @@ public class MainApp {
                 break;
             }
         }
+    }
+
+    public static boolean emptyMap() {
+        boolean star = false;
+        for(int i = 0; i < SIZE; i++){
+            for(int j = 0; j < SIZE; j++){
+                if(map[i][j] == DOT_EMPTY){
+                    star = true;
+                    break;
+                }
+            }
+        }
+        return !star;
     }
 
     public static void initMap(){
@@ -54,59 +74,125 @@ public class MainApp {
             System.out.println("Введите X и Y");
             x = sc.nextInt();
             y = sc.nextInt();
-        } while (x < 0 && x >= SIZE && y < 0 && y >= SIZE && map[y][x] != DOT_EMPTY);
+        } while (x < 0 || x >= SIZE || y < 0 || y >= SIZE || map[y][x] != DOT_EMPTY);
         map[y][x] = DOT_X;
     }
     public static void aiStep(){
         int x, y;
-        do{
-            Random rand = new Random();
-            x = rand.nextInt(3);
-            y = rand.nextInt(3);
-        } while (map[y][x] != DOT_EMPTY);
-        map[y][x] = DOT_O;
-    }
-    public static boolean checkWin(char symb){
-        for(int i = 0; i < SIZE; i++){
-            if(searchWin(i, "rows", symb) || searchWin(i, "column", symb)){
-                return true;
+        boolean step = false;
+
+        for(int i = 0; i < SIZE;i++){
+            for(int j = 0; j < SIZE;j++){
+                if(map[i][j] == DOT_EMPTY && !step){
+                    map[i][j] = DOT_X;
+                    if(checkWin(DOT_X)){
+                        map[i][j] = DOT_O;
+                        step = true;
+                        break;
+                    }
+                    else{
+                        map[i][j] = DOT_EMPTY;
+                    }
+                }
             }
         }
-        if(searchWin(0, "d1", symb) || searchWin(0, "d2", symb)){
+
+        if(!step){
+            do{
+                Random rand = new Random();
+                x = rand.nextInt(SIZE);
+                y = rand.nextInt(SIZE);
+            } while (map[y][x] != DOT_EMPTY);
+            map[y][x] = DOT_O;
+        }
+    }
+    public static boolean checkWin(char symb){
+
+        if(searchWin("rows", symb, 0) || searchWin("column", symb, 0)){
             return true;
         }
-
+            for (int n = (SHTICK - SIZE); n <= (SIZE - SHTICK); n++) {
+                if (searchWin("d1", symb, n)) {
+                    return true;
+                }
+            }
+            for (int n = (SHTICK-1); n <= SIZE; n++) {
+                if (searchWin("d2", symb, n)) {
+                    return true;
+                }
+            }
         return false;
     }
 
-    public static boolean searchWin(int i, String mode, char symb){
+    public static boolean searchWin(String mode, char symb, int n){
 
-        boolean  win = true;
-
-        for (int j = 0; j < SIZE; j++) {
-            int k1 = i,k2 = j;
-            switch(mode){
-                case "column":{
-                    k1 = j;
-                    k2 = i;
-                    break;
+        int count = 0;
+        for(int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                switch (mode) {
+                    case "rows":{
+                        if(checkWin(i,j,symb)){
+                            count+=1;
+                        }
+                        else{
+                            count = 0;
+                        }
+                        if(j == SIZE-1 && count != SHTICK){
+                            count = 0;
+                        }
+                        break;
+                    }
+                    case "column": {
+                        if(checkWin(j,i,symb)){
+                            count+=1;
+                        }
+                        else{
+                            count = 0;
+                        }
+                        if(j == SIZE-1 && count != SHTICK){
+                            count = 0;
+                        }
+                        break;
+                    }
+                    case "d1": {
+                        if (i - j == n) {
+                            if(checkWin(i, j,symb)){
+                                count += 1;
+                            }
+                            else{
+                                count = 0;
+                            }
+                        }
+                        break;
+                    }
+                    case "d2": {
+                        if (i + j == n) {
+                            if(checkWin(i, j,symb)){
+                                count += 1;
+                            }
+                            else{
+                                count = 0;
+                            }
+                        }
+                        break;
+                    }
                 }
-                case "d1":{
-                    k1 = j;
-                    k2 = j;
-                    break;
-                }
-                case "d2":{
-                    k1 = j;
-                    k2 = SIZE - j - 1;
-                    break;
+                if(count==SHTICK){
+                    return true;
                 }
             }
-            if (map[k1][k2] != symb) {
-                win = false;
-                break;
-            }
+
         }
-        return win;
+        return false;
+    }
+
+    public static boolean checkWin(int i, int j, char symb){
+
+        if (map[i][j] != symb) {
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }

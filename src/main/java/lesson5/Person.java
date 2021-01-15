@@ -5,10 +5,10 @@ public class Person {
     private String position;
     private String email;
     private int salary;
-    private int age;
+    private byte age;
 
 
-    public Person(String fio, String position, String email, int salary, int age) {
+    public Person(String fio, String position, String email, int salary, byte age) {
         this.fio = fio;
         this.position = position;
         this.email = email;
@@ -49,11 +49,11 @@ public class Person {
         this.salary = salary;
     }
 
-    public int getAge() {
+    public byte getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(byte age) {
         this.age = age;
     }
 

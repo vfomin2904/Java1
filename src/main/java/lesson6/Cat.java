@@ -17,7 +17,7 @@ public class Cat extends Animal {
             System.out.println(name+" пробежал "+l+" метров");
         }
         else{
-            System.out.println(name+" пробежал "+MAX_RUN+" метров и устал");
+            System.out.println(name+" не может пробежать больше "+MAX_RUN+" метров");
         }
     }
 }

@@ -19,9 +19,9 @@ public class Application {
         cat2.run(20);
         cat3.run(250);
 
-        System.out.println("Всего животных: "+Animal.counter);
-        System.out.println("Всего собак: "+Dog.counter);
-        System.out.println("Всего кошек: "+Cat.counter);
+        System.out.println("Всего животных: "+Animal.getCounter());
+        System.out.println("Всего собак: "+Dog.getCounter());
+        System.out.println("Всего кошек: "+Cat.getCounter());
 
     }
 }

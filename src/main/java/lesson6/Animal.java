@@ -1,13 +1,26 @@
 package lesson6;
 
 abstract class Animal {
-    public static int counter = 0;
-    public String name;
+    private static int counter = 0;
+    private String name;
 
-    Animal(){
+    Animal(String name){
+        this.name = name;
         counter+=1;
+    }
+
+    public static int getCounter() {
+        return counter;
     }
 
     abstract void swim(int l);
     abstract void run(int l);
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
